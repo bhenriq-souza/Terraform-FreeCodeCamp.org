@@ -45,3 +45,25 @@ resource "aws_route_table_association" "free_camp_public_rt_association" {
   subnet_id      = aws_subnet.free_camp_subnet.id
   route_table_id = aws_route_table.free_camp_public_rt.id
 }
+
+resource "aws_security_group" "free_camp_sg" {
+  vpc_id = aws_vpc.free_camp_vpc.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["177.188.149.26/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    "Name" = "free_camp_sg"
+  }
+}

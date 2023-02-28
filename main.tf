@@ -67,3 +67,24 @@ resource "aws_security_group" "free_camp_sg" {
     "Name" = "free_camp_sg"
   }
 }
+
+resource "aws_key_pair" "free_camp_keys" {
+  key_name   = "free_camp_key"
+  public_key = file("~/.ssh/free_camp_key.pub")
+}
+
+resource "aws_instance" "free_camp_instance" {
+  instance_type          = "t2.micro"
+  ami                    = data.aws_ami.free_camp_ami.id
+  key_name               = aws_key_pair.free_camp_keys.key_name
+  vpc_security_group_ids = [aws_security_group.free_camp_sg.id]
+  subnet_id              = aws_subnet.free_camp_subnet.id
+  user_data              = file("userdata.tpl")
+  root_block_device {
+    volume_size = 10
+  }
+
+  tags = {
+    "Name" = "free_camp_instance"
+  }
+}
